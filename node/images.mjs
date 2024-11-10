@@ -28,7 +28,11 @@ try {
     fs.mkdirSync(imagesDir, { recursive: true });
   }
 
-  const fileName = generateFileNameWithExtension(prompt, imageUrl, imagesDir);
+  const fileName = generateFileNameWithExtension({
+    prompt,
+    url: imageUrl,
+    imagesDir,
+  });
   const filePath = path.join(imagesDir, fileName);
 
   try {

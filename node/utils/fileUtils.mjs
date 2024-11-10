@@ -1,7 +1,7 @@
 import { URL } from "url";
 import fs from "fs";
 
-export function generateFileNameWithExtension(prompt, url, imagesDir) {
+export function generateFileNameWithExtension({ prompt, url, imagesDir }) {
   // Convert the prompt to lowercase, replace spaces with underscores, and limit to 25 characters
   const baseFileName = prompt
     .toLowerCase()
@@ -10,7 +10,7 @@ export function generateFileNameWithExtension(prompt, url, imagesDir) {
     .join("_")
     .substring(0, 25);
 
-  const extension = getImageExtension(url) || "png";
+  const extension = (url && getImageExtension(url)) || "png";
 
   const version = getNextVersionNumber(baseFileName, extension, imagesDir);
   return `${baseFileName}_v${version}.${extension}`;
