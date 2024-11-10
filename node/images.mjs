@@ -8,7 +8,8 @@ import { openaiErrorHandler } from "./utils/openaiErrorHandler.mjs";
 
 const __dirname = import.meta.dirname;
 
-const prompt = "monkey sitting on the moon in red dress";
+const prompt =
+  "sun is shining in the early morning while two fisherman are sitting near the river";
 
 try {
   const response = await openai.images.generate({

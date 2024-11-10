@@ -1,5 +1,7 @@
 import { URL } from "url";
 import fs from "fs";
+import path from "path";
+import { DateTime } from "luxon";
 
 export function generateFileNameWithExtension({ prompt, url, imagesDir }) {
   // Convert the prompt to lowercase, replace spaces with underscores, and limit to 25 characters
@@ -44,5 +46,35 @@ export function getImageExtension(url) {
   } catch (error) {
     console.error("Invalid URL:", error);
     return null;
+  }
+}
+
+export function saveImageDataToJson({
+  imageMetaData,
+  imagesDir,
+  base64ImageData,
+}) {
+  try {
+    const jsonFilePath = path.join(imagesDir, "images.json");
+
+    // Load existing data if the file exists
+    let images = [];
+    if (fs.existsSync(jsonFilePath)) {
+      const jsonData = fs.readFileSync(jsonFilePath, "utf8");
+      images = JSON.parse(jsonData);
+    }
+
+    // Append the new image data
+    images.push({
+      ...imageMetaData,
+      date: DateTime.now().toFormat("d-M-yyyy"),
+      base64: base64ImageData,
+    });
+
+    // Save all data back to the JSON file
+    fs.writeFileSync(jsonFilePath, JSON.stringify(images, null, 2), "utf8");
+    console.log("Image data saved successfully to JSON file:", jsonFilePath);
+  } catch (error) {
+    console.error("Error saving image data to JSON:", error.message);
   }
 }
