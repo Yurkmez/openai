@@ -1,5 +1,5 @@
-import { OpenAIError } from "openai";
 import openai from "./utils/openai.mjs";
+import { openaiErrorHandler } from "./utils/openaiErrorHandler.mjs";
 
 const systemContent = "Старайся отвечать кратко. Не более 15 слов";
 const userContent = "Напиши историю о себе";
@@ -27,9 +27,5 @@ try {
     console.log(choice.message);
   });
 } catch (error) {
-  if (error instanceof OpenAIError) {
-    console.error("OpenAI Error:", error.message);
-  } else {
-    console.error("Some error occured:", error.message);
-  }
+  openaiErrorHandler(error);
 }
