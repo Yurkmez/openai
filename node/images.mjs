@@ -8,7 +8,7 @@ import { openaiErrorHandler } from "./utils/openaiErrorHandler.mjs";
 
 const __dirname = import.meta.dirname;
 
-const prompt = "blogger setup with notebook and camera";
+const prompt = "monkey sitting on the moon in red dress";
 
 try {
   const response = await openai.images.generate({
@@ -20,20 +20,20 @@ try {
 
   // console.log(response);
 
-  const image_url = response.data[0].url;
-  // console.log(image_url);
+  const imageUrl = response.data[0].url;
+  // console.log(imageUrl);
 
   const imagesDir = path.join(__dirname, "images");
   if (!fs.existsSync(imagesDir)) {
     fs.mkdirSync(imagesDir, { recursive: true });
   }
 
-  const fileName = generateFileNameWithExtension(prompt, image_url);
+  const fileName = generateFileNameWithExtension(prompt, imageUrl, imagesDir);
   const filePath = path.join(imagesDir, fileName);
 
   try {
     // Attempt to download the image
-    const imageResponse = await fetch(image_url);
+    const imageResponse = await fetch(imageUrl);
     if (!imageResponse.ok)
       throw new Error(`Failed to download image: ${imageResponse.statusText}`);
 
