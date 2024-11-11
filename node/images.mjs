@@ -24,17 +24,18 @@ try {
   const imageUrl = response.data[0].url;
   // console.log(imageUrl);
 
-  const imagesDir = path.join(__dirname, "images");
-  if (!fs.existsSync(imagesDir)) {
-    fs.mkdirSync(imagesDir, { recursive: true });
+  const dir = path.join(__dirname, "images");
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 
   const fileName = generateFileNameWithExtension({
     prompt,
     url: imageUrl,
-    imagesDir,
+    dir,
+    extension: "png",
   });
-  const filePath = path.join(imagesDir, fileName);
+  const filePath = path.join(dir, fileName);
 
   try {
     // Attempt to download the image

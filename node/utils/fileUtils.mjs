@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { DateTime } from "luxon";
 
-export function generateFileNameWithExtension({ prompt, url, imagesDir }) {
+export function generateFileNameWithExtension({ prompt, url, dir, extension }) {
   // Convert the prompt to lowercase, replace spaces with underscores, and limit to 25 characters
   const baseFileName = prompt
     .toLowerCase()
@@ -12,17 +12,19 @@ export function generateFileNameWithExtension({ prompt, url, imagesDir }) {
     .join("_")
     .substring(0, 25);
 
-  const extension = (url && getImageExtension(url)) || "png";
+  const customExtension = url
+    ? getResourceExtension(url) || extension
+    : extension;
 
-  const version = getNextVersionNumber(baseFileName, extension, imagesDir);
-  return `${baseFileName}_v${version}.${extension}`;
+  const version = getNextVersionNumber(baseFileName, customExtension, dir);
+  return `${baseFileName}_v${version}.${customExtension}`;
 }
 
-export function getNextVersionNumber(baseFileName, extension, imagesDir) {
+export function getNextVersionNumber(baseFileName, extension, dir) {
   const filePattern = new RegExp(`^${baseFileName}_v(\\d+)\\.${extension}$`);
   let highestVersion = 0;
 
-  const existingFiles = fs.readdirSync(imagesDir);
+  const existingFiles = fs.readdirSync(dir);
 
   existingFiles.forEach((file) => {
     const match = file.match(filePattern);
@@ -37,7 +39,7 @@ export function getNextVersionNumber(baseFileName, extension, imagesDir) {
   return highestVersion + 1;
 }
 
-export function getImageExtension(url) {
+export function getResourceExtension(url) {
   try {
     const parsedUrl = new URL(url);
     const pathname = parsedUrl.pathname;
@@ -49,13 +51,9 @@ export function getImageExtension(url) {
   }
 }
 
-export function saveImageDataToJson({
-  imageMetaData,
-  imagesDir,
-  base64ImageData,
-}) {
+export function saveImageDataToJson({ imageMetaData, dir, base64ImageData }) {
   try {
-    const jsonFilePath = path.join(imagesDir, "images.json");
+    const jsonFilePath = path.join(dir, "images.json");
 
     // Load existing data if the file exists
     let images = [];

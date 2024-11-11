@@ -31,13 +31,17 @@ try {
   // console.log(base64ImageData);
 
   if (base64ImageData) {
-    const imagesDir = path.join(__dirname, "images");
-    if (!fs.existsSync(imagesDir)) {
-      fs.mkdirSync(imagesDir, { recursive: true });
+    const dir = path.join(__dirname, "images");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
     }
 
-    const fileName = generateFileNameWithExtension({ imagesDir, prompt });
-    const filePath = path.join(imagesDir, fileName);
+    const fileName = generateFileNameWithExtension({
+      dir,
+      prompt,
+      extension: "png",
+    });
+    const filePath = path.join(dir, fileName);
 
     // Decode base64 and save image
     const imageBuffer = Buffer.from(base64ImageData, "base64");
@@ -47,7 +51,7 @@ try {
     // Append image data including Base64 data to the images.json file
     const imageMetaData = { prompt, revisedPrompt, size, model };
     saveImageDataToJson({
-      imagesDir,
+      dir,
       imageMetaData,
       base64ImageData,
     });
