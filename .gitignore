@@ -1,4 +1,6 @@
 .env
 api_key.txt
+komment.txt
 
 node_modules/
+.venv
