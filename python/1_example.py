@@ -17,6 +17,7 @@ load_dotenv()  # take environment variables from .env
 
 client = OpenAI()
 
+# chat.completions - означает, что мы будем использовать текстовую модель "завершение текста"
 completion = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
