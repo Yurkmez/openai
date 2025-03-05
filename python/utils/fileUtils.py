@@ -1,11 +1,10 @@
 import os
 import re
+import json
 
 
 def generate_file_name_with_extension(prompt, dir, extension):
-    '''
-    Generate a unique file name with extention based on the prompt
-    '''
+    # Generate a unique file name with extention based on the prompt
     base_file_name = "_".join(prompt.lower().split()[:3])
     # get_next_version_number - смотрит наличие
     version = get_next_version_number(base_file_name, extension, dir)
@@ -23,17 +22,15 @@ base_file_name = "_".join(prompt.lower().split())[:3]
             prompt = "Hello World This is Python"
             base_file_name = "_".join(prompt.lower().split()[:3])
             print(base_file_name)  # "hello_world_this"
-
-
 '''
 
 
 def get_next_version_number(base_file_name, extension, dir):
     # Generate version number
-    if not dir or os.path.exists(dir):
+    if not dir:
         return 1
     file_pattern = re.compile(
-        rf"^{base_file_name}_v(\d+)\.{re.escape(extension)}$")
+        rf"^{re.escape(base_file_name)}_v(\d+)\.{re.escape(extension)}$")
     highest_version = 0
     existing_files = os.listdir(dir)
     for file in existing_files:
@@ -64,3 +61,19 @@ file_pattern = re.compile(rf"^{base_file_name}_v(\d+)\.{re.escape(extension)}$")
             image_v2.png
             image_v10.png
 '''
+
+
+def write_image_data_to_json_file(file_path, data):
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+        with open(file_path, "r") as file:
+            try:
+                existing_data = json.load(file)
+            except:
+                existing_data = []
+    else:
+        existing_data = []
+
+    existing_data.append(data)
+
+    with open(file_path, "w") as file:
+        json.dump(existing_data, file, indent=4)
