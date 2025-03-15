@@ -1,0 +1,95 @@
+# STEP 1 - Uploading file for Batch API
+    batch_input_file = client.files.create(
+        file=open("./batch/batch_input.jsonl", "rb"),
+        purpose="batch")
+
+    # pprint(object_to_dict(batch_input_file))
+    # ______Ответ______
+    # {'_request_id': 'req_c5c23e936acfe9e886f9b2bf8fae0a9e',
+    # 'bytes': 577,
+    # 'created_at': 1741948891,
+    # 'filename': 'batch_input.jsonl',
+    # 'id': 'file-FEkvN3Am2rfSY1qbHQ2cAP',
+    # 'object': 'file',
+    # 'purpose': 'batch',
+    # 'status': 'processed',
+    # 'status_details': None}
+    # __________________________
+
+# STEP 2 - Creating a Batch
+    batch_creation_response = client.batches.create(
+        input_file_id=batch_input_file.id,
+        endpoint="/v1/chat/completions",
+        completion_window="24h",
+        metadata={
+            "description": "My first Batch",
+            "internal_id": "123",
+        }
+    )
+
+    pprint(object_to_dict(batch_creation_response))
+    # ______Ответ______
+    {'_request_id': 'req_65970030f7e4df7056a1f061f76df9c1',
+        'cancelled_at': None,
+        'cancelling_at': None,
+        'completed_at': None,
+        'completion_window': '24h',
+        'created_at': 1741966151,
+        'endpoint': '/v1/chat/completions',
+        'error_file_id': None,
+        'errors': None,
+        'expired_at': None,
+        'expires_at': 1742052551,
+        'failed_at': None,
+        'finalizing_at': None,
+        'id': 'batch_67d44b47b1c4819087ebf5a7691ac68b',
+        'in_progress_at': None,
+        'input_file_id': 'file-9c9sepGyTR3MQwcfUx7wNp',
+        'metadata': {'description': 'My first Batch', 'internal_id': '123'},
+        'object': 'batch',
+        'output_file_id': None,
+        'request_counts': {'completed': 0, 'failed': 0, 'total': 0},
+        'status': 'validating'}
+
+# STEP 4 - Retrieving the batch results
+file_response = client.files.content("file-Ag97vweroAbuRunPKy4RXP")
+    # file_response = client.files.content(output_file_id)
+
+    print(file_response.text)
+    # ______Ответ______
+    {
+        "id": "batch_req_67d45356f5248190bd278c36266c9e3e", 
+        "custom_id": "batch_request-1", 
+        "response": {
+                        "status_code": 200, 
+                        "request_id": "ae8bd9a4309dedfd82c4cde6876b8f5d", 
+                        _______________________________________________________________
+                        "body": {
+                            "id": "chatcmpl-BB1nFy4dzODxpgMfSp0THhPdxEUX0", 
+                            "object": "chat.completion", 
+                            "created": 1741968201, 
+                            "model": "gpt-3.5-turbo-0125", 
+                            ____________________
+                            "choices":  [{"index": 0, 
+                                                "message":  {"role": "assistant", 
+                                                            content": "Why did the scarecrow win an award? Because he was outstanding in his field!", "refusal": null,
+                                                            "annotations": []
+                                                            }, 
+                                                "logprobs": null, 
+                                                "finish_reason": "stop"
+                            }], 
+                            ________________________
+                            "usage": {
+                                    "prompt_tokens": 24, 
+                                    "completion_tokens": 18, 
+                                    "total_tokens": 42, 
+                                    "prompt_tokens_details": {"cached_tokens": 0, "audio_tokens": 0}, 
+                                    "completion_tokens_details": {"reasoning_tokens": 0, "audio_tokens": 0, "accepted_prediction_tokens": 0, "rejected_prediction_tokens": 0}
+                            }, 
+                            _______________________________________________________________
+                            "service_tier": "default", 
+                            "system_fingerprint": null
+                        }
+                    }, 
+        "error": null
+    }
